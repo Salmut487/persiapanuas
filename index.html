@@ -1,0 +1,545 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hadis Digital - Pembahasan Psikologi dalam Hadits Nabi</title>
+    
+    <!-- Tailwind CSS v4 via CDN -->
+    <script src="https://unpkg.com/@tailwindcss/browser@4"></script>
+    
+    <!-- Font Awesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts for Typography -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+            background-color: #f8fafc; /* slate-50 */
+        }
+        
+        /* Typography Optimizations */
+        .txt-ayat {
+            font-family: 'Amiri', serif;
+            font-size: 1.75rem; /* ~text-3xl for better readability */
+            text-align: justify;
+            text-align-last: right;
+            line-height: 2.5;
+            word-spacing: -2px;
+            direction: rtl;
+            color: #1f2937;
+        }
+        
+        .txt-terjemah {
+            text-align: justify;
+            color: #4b5563;
+            font-style: italic;
+            hyphens: auto;
+            line-height: 1.75;
+        }
+
+        /* Sidebar scrollbar hide for cleaner look */
+        .no-scrollbar::-webkit-scrollbar {
+            display: none;
+        }
+        .no-scrollbar {
+            -ms-overflow-style: none;
+            scrollbar-width: none;
+        }
+        
+        /* Smooth transitions */
+        .transition-all-custom {
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+    </style>
+</head>
+<body class="text-gray-800 antialiased h-screen flex flex-col overflow-hidden">
+
+    <!-- TOP NAVIGATION BAR (Sticky & Responsive) -->
+    <header class="fixed top-0 left-0 right-0 h-16 bg-emerald-800 text-white shadow-md z-50 flex items-center px-4 md:px-6 transition-all-custom">
+        <div class="flex items-center w-full">
+            <!-- Mobile Burger Toggle -->
+            <button id="btn-toggle-sidebar" class="md:hidden mr-4 text-white hover:text-emerald-200 focus:outline-none" aria-label="Toggle Sidebar">
+                <i class="fa-solid fa-bars text-xl"></i>
+            </button>
+            <!-- Logo Brand -->
+            <button class="flex items-center gap-2 cursor-pointer focus:outline-none" onclick="bukaKonten('page-home')">
+                <i class="fa-solid fa-book-open-reader text-2xl"></i>
+                <span class="text-xl font-bold tracking-wider">HADIS DIGITAL</span>
+            </button>
+            <div class="ml-auto text-sm opacity-80 hidden sm:block">
+                E-Book Digital Interaktif
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN LAYOUT WRAPPER -->
+    <div class="flex flex-1 pt-16 h-full overflow-hidden">
+        
+        <!-- SIDEBAR OVERLAY (Mobile) -->
+        <div id="sidebar-overlay" class="fixed inset-0 bg-black/50 z-30 hidden transition-opacity md:hidden"></div>
+
+        <!-- SIDEBAR NAVIGATION -->
+        <aside id="sidebar" class="fixed inset-y-0 left-0 pt-16 w-72 bg-white border-r border-gray-200 shadow-xl z-40 transform -translate-x-full md:translate-x-0 transition-transform duration-300 flex flex-col no-scrollbar overflow-y-auto">
+            <nav class="flex-1 py-6 px-4 space-y-2">
+                
+                <!-- MENU 1: Home -->
+                <button onclick="bukaKonten('page-home')" class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium transition-colors">
+                    <i class="fa-solid fa-house w-5 text-center"></i>
+                    <span>Home</span>
+                </button>
+
+                <!-- MENU 2: Daftar Isi / Materi E-Book (Nested) -->
+                <div>
+                    <button onclick="toggleSubmenu('submenu-materi')" class="w-full flex items-center justify-between px-4 py-3 text-left rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium transition-colors">
+                        <div class="flex items-center gap-3">
+                            <i class="fa-solid fa-list w-5 text-center"></i>
+                            <span>Materi E-Book</span>
+                        </div>
+                        <i id="icon-submenu-materi" class="fa-solid fa-chevron-down text-sm transition-transform shrink-0"></i>
+                    </button>
+                    
+                    <!-- PERBAIKAN: Padding dan Margin dikurangi agar teks tidak terlalu memanjang ke kanan -->
+                    <div id="submenu-materi" class="hidden flex-col gap-3 pl-4 pr-2 py-2 mt-1 border-l border-emerald-100 ml-4">
+                        
+                        <!-- Bab 1 -->
+                        <div class="w-full">
+                            <button onclick="toggleSubmenu('sub-bab1')" class="w-full flex items-start justify-between text-left text-sm font-semibold text-gray-800 hover:text-emerald-600 py-1.5 pr-2">
+                                <span class="pr-2 leading-tight">Bab 1: Hadits Psikologi</span>
+                                <i id="icon-sub-bab1" class="fa-solid fa-angle-down text-xs mt-1 shrink-0"></i>
+                            </button>
+                            <div id="sub-bab1" class="hidden flex-col gap-1 mt-1 pl-3 border-l border-gray-200 ml-1.5">
+                                <button onclick="bukaKonten('page-bab1', 'bab1-a')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">A. Motivasi dan Pengendalian Niat</button>
+                                <button onclick="bukaKonten('page-bab1', 'bab1-b')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">B. Konsep Resiliensi dan Manajemen Stres</button>
+                                <button onclick="bukaKonten('page-bab1', 'bab1-c')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">C. Kesehatan Mental: Larangan Marah & Iri</button>
+                                <button onclick="bukaKonten('page-bab1', 'bab1-d')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">D. Kecerdasan Emosional Interaksi Sosial</button>
+                            </div>
+                        </div>
+
+                        <!-- Bab 2 -->
+                        <div class="w-full">
+                            <button onclick="toggleSubmenu('sub-bab2')" class="w-full flex items-start justify-between text-left text-sm font-semibold text-gray-800 hover:text-emerald-600 py-1.5 pr-2">
+                                <span class="pr-2 leading-tight">Bab 2: Aplikasi Psikologi</span>
+                                <i id="icon-sub-bab2" class="fa-solid fa-angle-down text-xs mt-1 shrink-0"></i>
+                            </button>
+                            <div id="sub-bab2" class="hidden flex-col gap-1 mt-1 pl-3 border-l border-gray-200 ml-1.5">
+                                <button onclick="bukaKonten('page-bab2', 'bab2-a')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">A. Membangun Growth Mindset</button>
+                                <button onclick="bukaKonten('page-bab2', 'bab2-b')" class="w-full text-left text-xs text-emerald-800 font-medium hover:text-emerald-900 py-1.5 leading-relaxed break-words whitespace-normal bg-emerald-50 rounded px-2 -ml-2 border-l-2 border-emerald-500">B. Terapi Kebahagiaan (Data Personal)</button>
+                                <button onclick="bukaKonten('page-bab2', 'bab2-c')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">C. Mengatasi Quarter Life Crisis</button>
+                                <button onclick="bukaKonten('page-bab2', 'bab2-d')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">D. Refleksi Diri: Muhasabah</button>
+                            </div>
+                        </div>
+
+                        <!-- Bab 3 -->
+                        <div class="w-full">
+                            <button onclick="toggleSubmenu('sub-bab3')" class="w-full flex items-start justify-between text-left text-sm font-semibold text-gray-800 hover:text-emerald-600 py-1.5 pr-2">
+                                <span class="pr-2 leading-tight">Bab 3: Psikologi Kepribadian</span>
+                                <i id="icon-sub-bab3" class="fa-solid fa-angle-down text-xs mt-1 shrink-0"></i>
+                            </button>
+                            <div id="sub-bab3" class="hidden flex-col gap-1 mt-1 pl-3 border-l border-gray-200 ml-1.5">
+                                <button onclick="bukaKonten('page-bab3', 'bab3-a')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">A. Membangun Kepribadian Mulia</button>
+                                <button onclick="bukaKonten('page-bab3', 'bab3-b')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">B. Konsep Harga Diri (Self-Worth)</button>
+                                <button onclick="bukaKonten('page-bab3', 'bab3-c')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">C. Psikologi Sosial: Lingkungan Pergaulan</button>
+                            </div>
+                        </div>
+
+                        <!-- Bab 4 -->
+                        <div class="w-full">
+                            <button onclick="toggleSubmenu('sub-bab4')" class="w-full flex items-start justify-between text-left text-sm font-semibold text-gray-800 hover:text-emerald-600 py-1.5 pr-2">
+                                <span class="pr-2 leading-tight">Bab 4: Neuropsikologi</span>
+                                <i id="icon-sub-bab4" class="fa-solid fa-angle-down text-xs mt-1 shrink-0"></i>
+                            </button>
+                            <div id="sub-bab4" class="hidden flex-col gap-1 mt-1 pl-3 border-l border-gray-200 ml-1.5">
+                                <button onclick="bukaKonten('page-bab4', 'bab4-a')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">A. Pengendalian Diri & Regulasi Impuls</button>
+                                <button onclick="bukaKonten('page-bab4', 'bab4-b')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">B. Kebiasaan Kecil (Habit Formation)</button>
+                                <button onclick="bukaKonten('page-bab4', 'bab4-c')" class="w-full text-left text-xs text-gray-600 hover:text-emerald-700 py-1.5 leading-relaxed break-words whitespace-normal">C. Bahaya Overthinking & Prasangka</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- MENU 3: Penulis -->
+                <button onclick="bukaKonten('page-penulis')" class="w-full flex items-center gap-3 px-4 py-3 text-left rounded-lg text-gray-700 hover:bg-emerald-50 hover:text-emerald-700 font-medium transition-colors">
+                    <i class="fa-solid fa-user-pen w-5 text-center"></i>
+                    <span>Penulis</span>
+                </button>
+            </nav>
+            
+            <div class="p-4 border-t border-gray-100 text-xs text-center text-gray-400">
+                &copy; 2026 Hadis Digital.
+            </div>
+        </aside>
+
+        <!-- AREA KONTEN UTAMA -->
+        <main id="main-content" class="flex-1 w-full md:ml-72 overflow-y-auto bg-slate-50 relative scroll-smooth">
+            <div class="max-w-4xl mx-auto p-4 md:p-8 pb-24">
+                
+                <!-- HALAMAN HOME (Cover) -->
+                <div id="page-home" class="page-section block">
+                    <div class="relative bg-gradient-to-br from-emerald-900 via-emerald-800 to-teal-700 text-white rounded-3xl shadow-2xl overflow-hidden min-h-[75vh] flex flex-col items-center justify-center p-8 md:p-16 border-4 border-emerald-900/50">
+                        <!-- Ornaments -->
+                        <div class="absolute top-0 left-0 w-full h-full opacity-10 pointer-events-none" style="background-image: radial-gradient(circle at 2px 2px, white 1px, transparent 0); background-size: 32px 32px;"></div>
+                        <div class="absolute -top-24 -right-24 w-64 h-64 bg-emerald-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+                        <div class="absolute -bottom-24 -left-24 w-64 h-64 bg-teal-500 rounded-full mix-blend-multiply filter blur-3xl opacity-50"></div>
+                        
+                        <div class="relative z-10 text-center flex flex-col items-center">
+                            <div class="w-24 h-24 bg-white/10 backdrop-blur-md rounded-2xl flex items-center justify-center mb-8 border border-white/20 shadow-lg">
+                                <i class="fa-solid fa-book-quran text-5xl text-emerald-100"></i>
+                            </div>
+                            <p class="text-emerald-200 text-sm font-semibold tracking-widest uppercase mb-4">Pembahasan Khusus</p>
+                            <h1 class="text-4xl md:text-6xl font-extrabold mb-6 leading-tight font-serif drop-shadow-md">
+                                Psikologi dalam<br>Hadits Nabi
+                            </h1>
+                            <p class="text-lg md:text-xl text-emerald-50 max-w-2xl mx-auto font-light leading-relaxed mb-12 drop-shadow-sm">
+                                Memahami jiwa manusia melalui cahaya sunnah, menuju kehidupan yang lebih tenang dan bermakna.
+                            </p>
+                            <div class="mt-8 pt-8 border-t border-white/20 w-full max-w-md">
+                                <p class="text-xs uppercase tracking-[0.2em] text-emerald-200 mb-2">Penulis Buku</p>
+                                <p class="text-2xl font-semibold">Salman Mutawakkil</p>
+                                <p class="text-sm mt-1 text-emerald-100 font-light">& ChatGPT</p>
+                                <div class="mt-6 inline-block bg-white/10 px-4 py-1 rounded-full text-xs text-white/80 backdrop-blur-sm border border-white/10">
+                                    Cetakan Pertama: Mei 2026
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HALAMAN BAB 1 -->
+                <div id="page-bab1" class="page-section hidden">
+                    <h1 class="text-3xl md:text-4xl font-bold text-emerald-900 mb-8 pb-4 border-b-2 border-emerald-100">BAB 1: HADITS-HADITS PSIKOLOGI</h1>
+                    
+                    <div id="bab1-a" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">A</span>
+                            Motivasi dan Pengendalian Niat (Hadits Innamal A‘malu Binniyat)
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ أَمِيرِ الْمُؤْمِنِينَ أَبِي حَفْصٍ عُمَرَ بْنِ الْخَطَّابِ رَضِيَ اللَّهُ عَنْهُ قَالَ: سَمِعْتُ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ يَقُولُ: إِنَّمَا الْأَعْمَالُ بِالنِّيَّاتِ، وَإِنَّمَا لِكُلِّ امْرِئٍ مَا نَوَى</p>
+                            <p class="txt-terjemah">Dari Amirul Mukminin Abu Hafsh Umar bin Al-Khaththab ra., ia berkata: Aku mendengar Rasulullah SAW bersabda: "Sesungguhnya amal perbuatan itu bergantung pada niatnya, dan setiap orang akan mendapatkan sesuai apa yang ia niatkan."</p>
+                        </div>
+                    </div>
+
+                    <div id="bab1-b" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">B</span>
+                            Konsep Resiliensi dan Manajemen Stres (Hadits tentang Kesabaran)
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ صُهَيْبٍ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: عَجَبًا لِأَمْرِ الْمُؤْمِنِ،إِنَّ أَمْرَهُ كُلَّهُ لَهُ خَيْرٌ، وَلَيْسَ ذَلِكَ لِأَحَدٍ إِلَّا لِلْمُؤْمِنِ، إِنْ أَصَابَتْهُ سَرَّاءُ شَكَرَ فَكَانَ خَيْرًا لَهُ، وَإِنْ أَصَابَتْهُ ضَرَّاءُ صَبَرَ فَكَانَ خَيْرًا لَهُ</p>
+                            <p class="txt-terjemah">Dari Shuhaib ra., ia berkata: Rasulullah ﷺ bersabda: "Sungguh menakjubkan perkara seorang mukmin. Sesungguhnya seluruh urusannya adalah baik baginya, dan ini tidak dimiliki kecuali oleh seorang mukmin. Jika ia mendapat kesenangan, ia bersyukur, maka itu baik baginya. Dan jika ia ditimpa kesusahan, ia bersabar, maka itu baik baginya."</p>
+                        </div>
+                    </div>
+
+                    <div id="bab1-c" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">C</span>
+                            Kesehatan Mental: Larangan Marah dan Iri Hati
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ رَجُلًا قَالَ لِلنَّبِيِّ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: أَوْصِنِي. قَالَ: لَا تَغْضَبْ.<br>فَرَدَّدَ مِرَارًا، قَالَ: لَا تَغْضَبْ</p>
+                            <p class="txt-terjemah">Dari Abu Hurairah ra., bahwa seorang laki-laki berkata kepada Nabi SAW : "Berilah aku wasiat." Beliau menjawab: "Janganlah engkau marah." Orang itu mengulanginya berkali-kali, dan beliau tetap menjawab: "Janganlah engkau marah."</p>
+                            
+                            <hr class="my-6 border-gray-200 border-dashed">
+                            
+                            <p class="txt-ayat" dir="rtl">إِيَّاكُمْ وَالْحَسَدَ، فَإِنَّ الْحَسَدَ يَأْكُلُ الْحَسَنَاتِ كَمَا تَأْكُلُ النَّارُ الْحَطَبَ</p>
+                            <p class="txt-terjemah">Rasulullah SAW bersabda: "Jauhilah oleh kalian hasad (iri dengki), karena sesungguhnya hasad itu memakan kebaikan-kebaikan sebagaimana api melahap kayu bakar."</p>
+                        </div>
+                    </div>
+
+                    <div id="bab1-d" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">D</span>
+                            Kecerdasan Emosional dalam Interaksi Sosial
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">تَبَسُّمُكَ فِي وَجْهِ أَخِيكَ لَكَ صَدَقَةٌ</p>
+                            <p class="txt-terjemah">"Senyummu di hadapan saudaramu adalah sedekah."</p>
+                            
+                            <hr class="my-6 border-gray-200 border-dashed">
+                            
+                            <p class="txt-ayat" dir="rtl">الْمُسْلِمُ مَنْ سَلِمَ الْمُسْلِمُونَ مِنْ لِسَانِهِ وَيَدِهِ</p>
+                            <p class="txt-terjemah">"Seorang muslim (yang baik) adalah yang kaum muslimin lainnya selamat dari (gangguan) lisan dan tangannya."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HALAMAN BAB 2 -->
+                <div id="page-bab2" class="page-section hidden">
+                    <h1 class="text-3xl md:text-4xl font-bold text-emerald-900 mb-8 pb-4 border-b-2 border-emerald-100">BAB 2: APLIKASI PSIKOLOGI HADITS</h1>
+                    
+                    <div id="bab2-a" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">A</span>
+                            Membangun Growth Mindset dengan Konsep Tawakal
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">لَوْ تَوَكَّلْتُمْ عَلَى اللَّهِ حَقَّ تَوَكُّلِهِ لَرَزَقَكُمْ كَمَا يَرْزُقُ الطَّيْرَ، تَغْدُو خِمَاصًا وَتَرُوحُ بِطَانًا</p>
+                            <p class="txt-terjemah">"Seandainya kalian bertawakal kepada Allah dengan sebenar-benar tawakal, niscaya Dia akan memberimu rezeki sebagaimana Dia memberi rezeki kepada burung. Ia pergi pada pagi hari dalam keadaan perut kosong, dan pulang di sore hari dalam keadaan kenyang."</p>
+                        </div>
+                    </div>
+
+                    <!-- PENGGANTIAN DATA PERSONAL (Sesuai User Correction Ledger) -->
+                    <div id="bab2-b" class="bg-emerald-50 p-6 md:p-8 rounded-2xl shadow-inner border-2 border-emerald-200 mb-8 scroll-mt-24 transition-all-custom">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-900 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-600 text-white rounded-lg px-3 py-1 text-sm shrink-0 mt-1">B</span>
+                            Terapi Kebahagiaan: Kekuatan Bersyukur (Gratitude)
+                        </h3>
+                        <div class="space-y-4 bg-white p-5 rounded-xl border border-emerald-100">
+                            <div class="flex items-center gap-3 mb-2">
+                                <i class="fa-solid fa-id-card text-emerald-600 text-xl"></i>
+                                <h4 class="font-bold text-gray-800 uppercase tracking-wider text-sm">Data Identitas Mahasiswa</h4>
+                            </div>
+                            <hr class="border-gray-100">
+                            <div class="grid grid-cols-1 md:grid-cols-3 gap-4 pt-2">
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase tracking-wider">Nama Lengkap</p>
+                                    <p class="font-semibold text-gray-800 text-lg">Ahmad Sofian</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase tracking-wider">Nomor Induk Mahasiswa</p>
+                                    <p class="font-semibold text-gray-800 text-lg">251305026</p>
+                                </div>
+                                <div>
+                                    <p class="text-xs text-gray-500 uppercase tracking-wider">Kelas / Program Studi</p>
+                                    <p class="font-semibold text-gray-800 text-lg">2B / Ilmu Hadis</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div id="bab2-c" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">C</span>
+                            Mengatasi Quarter Life Crisis ala Rasulullah
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنِ ابْنِ عَبَّاسٍ رَضِيَ اللَّهُ عَنْهُمَا قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: اغْتَنِمْ خَمْسًا قَبْلَ خَمْسٍ: شَبَابَكَ قَبْلَ هَرَمِكَ، وَصِحَّتَكَ قَبْلَ سَقَمِكَ، وَغِنَاكَ قَبْلَ فَقْرِكَ، وَفَرَاغَكَ قَبْلَ شُغْلِكَ، وَحَيَاتَكَ قَبْلَ مَوْتِكَ</p>
+                            <p class="txt-terjemah">Dari Ibnu Abbas ra., ia berkata: Rasulullah ﷺ bersabda: "Manfaatkanlah lima perkara sebelum datangnya lima perkara: masa mudamu sebelum masa tuamu, masa sehatmu sebelum masa sakitmu, masa kayamu sebelum masa fakirmu, masa luangmu sebelum masa sibukmu, dan masa hidupmu sebelum kematianmu."</p>
+                        </div>
+                    </div>
+
+                    <div id="bab2-d" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">D</span>
+                            Refleksi Diri: Muhasabah sebagai Teknik Konseling Mandiri
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ أَبِي يَعْلَى شَدَّادِ بْنِ أَوْسٍ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: الْكَيِّسُ مَنْ دَانَ نَفْسَهُ وَعَمِلَ لِمَا بَعْدَ الْمَوْتِ، وَالْعَاجِزُ مَنْ أَتْبَعَ نَفْسَهُ هَوَاهَا وَتَمَنَّى عَلَى اللَّهِ</p>
+                            <p class="txt-terjemah">Dari Abi Ya’la Syaddad bin Aus ra., ia berkata: Rasulullah ﷺ bersabda: "Orang yang cerdas adalah orang yang mengevaluasi dirinya (muhasabah) dan beramal untuk kehidupan setelah kematian. Sedangkan orang yang lemah adalah orang yang mengikuti hawa nafsunya dan berangan-angan kosong kepada Allah."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HALAMAN BAB 3 -->
+                <div id="page-bab3" class="page-section hidden">
+                    <h1 class="text-3xl md:text-4xl font-bold text-emerald-900 mb-8 pb-4 border-b-2 border-emerald-100">BAB 3: PSIKOLOGI KEPRIBADIAN DAN KARAKTER</h1>
+                    
+                    <div id="bab3-a" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">A</span>
+                            Membangun Kepribadian Mulia (Akhlak sebagai Inti Karakter)
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: إِنَّمَا بُعِثْتُ لِأُتَمِّمَ صَالِحَ الْأَخْلَاقِ</p>
+                            <p class="txt-terjemah">Dari Abu Hurairah ra., ia berkata: Rasulullah ﷺ bersabda: "Sesungguhnya aku diutus hanya untuk menyempurnakan akhlak yang mulia"</p>
+                        </div>
+                    </div>
+
+                    <div id="bab3-b" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">B</span>
+                            Konsep Harga Diri (Self-Worth) yang Sehat
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنِ النَّوَّاسِ بْنِ سَمْعَانَ رَضِيَ اللَّهُ عَنْهُ قَالَ: سَأَلْتُ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ عَنِ الْبِرِّ وَالْإِثْمِ فَقَالَ: الْبِرُّ حُسْنُ الْخُلُقِ، وَالْإِثْمُ مَا حَاكَ فِي صَدْرِكَ وَكَرِهْتَ أَنْ يَطَّلِعَ عَلَيْهِ النَّاسُ</p>
+                            <p class="txt-terjemah">Dari An-Nawwas bin Sam'an ra., ia berkata: Aku bertanya kepada Rasulullah ﷺ tentang kebaikan dan dosa. Beliau menjawab: "Kebaikan adalah akhlak yang baik, dan dosa adalah sesuatu yang mengganjal di dadamu dan kamu tidak suka orang lain mengetahuinya"</p>
+                        </div>
+                    </div>
+
+                    <div id="bab3-c" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">C</span>
+                            Psikologi Sosial: Pentingnya Lingkungan Pergaulan
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ أَبِي مُوسَى رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: مَثَلُ الْجَلِيسِ الصَّالِحِ وَالسَّوْءِ، كَحَامِلِ الْمِسْكِ وَنَافِخِ الْكِيرِ.<br>فَحَامِلُ الْمِسْكِ إِمَّا أَنْ يُحْذِيَكَ، وَإِمَّا أَنْ تَبْتَاعَ مِنْهُ، وَإِمَّا أَنْ تَجِدَ مِنْهُ رِيحًا طَيِّبَةً، وَنَافِخُ الْكِيرِ إِمَّا أَنْ يُحْرِقَ ثِيَابَكَ، وَإِمَّا أَنْ تَجِدَ رِيحًا خَبِيثَةً</p>
+                            <p class="txt-terjemah">Dari Abu Musa ra., ia berkata: Rasulullah ﷺ bersabda: "Perumpamaan teman duduk yang baik dan yang buruk adalah seperti pembawa minyak misk dan peniup api pandai besi. Pembawa minyak misk: boleh jadi ia memberimu, atau engkau membeli darinya, atau setidaknya engkau mendapat wangi yang harum darinya. Adapun peniup api pandai besi: boleh jadi ia akan membakar pakaianmu, atau setidaknya engkau mendapat bau asap yang tidak sedap"</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HALAMAN BAB 4 -->
+                <div id="page-bab4" class="page-section hidden">
+                    <h1 class="text-3xl md:text-4xl font-bold text-emerald-900 mb-8 pb-4 border-b-2 border-emerald-100">BAB 4: NEUROPSIKOLOGI DAN PERILAKU MANUSIA</h1>
+                    
+                    <div id="bab4-a" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">A</span>
+                            Pengendalian Diri dan Regulasi Impuls
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ أَنَّ رَسُولَ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ قَالَ: لَيْسَ الشَّدِيدُ بِالصُّرَعَةِ، إِنَّمَا الشَّدِيدُ الَّذِي يَمْلِكُ نَفْسَهُ عِنْدَ الْغَضَبِ</p>
+                            <p class="txt-terjemah">Dari Abu Hurairah ra. bahwa Rasulullah ﷺ bersabda: "Orang yang kuat bukanlah orang yang pandai bergulat. Sesungguhnya orang yang kuat adalah orang yang mampu menahan dirinya ketika marah."</p>
+                        </div>
+                    </div>
+
+                    <div id="bab4-b" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">B</span>
+                            Kebiasaan Kecil yang Mengubah Segalanya (Habit Formation)
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ عَائِشَةَ رَضِيَ اللَّهُ عَنْهَا قَالَتْ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: أَحَبُّ الْأَعْمَالِ إِلَى اللَّهِ أَدْوَمُهَا وَإِنْ قَلَّ</p>
+                            <p class="txt-terjemah">Dari Aisyah ra., ia berkata: Rasulullah ﷺ bersabda: "Amalan yang paling dicintai Allah adalah amalan yang paling konsisten (terus-menerus), meskipun sedikit."</p>
+                        </div>
+                    </div>
+
+                    <div id="bab4-c" class="bg-white p-6 md:p-8 rounded-2xl shadow-sm border border-gray-100 mb-8 scroll-mt-24 transition-all-custom hover:shadow-md">
+                        <h3 class="text-xl md:text-2xl font-bold text-emerald-800 mb-6 flex items-start gap-3">
+                            <span class="bg-emerald-100 text-emerald-800 rounded-lg px-3 py-1 text-sm shrink-0 mt-1">C</span>
+                            Bahaya Overthinking dan Prasangka Buruk
+                        </h3>
+                        <div class="space-y-6">
+                            <p class="txt-ayat" dir="rtl">عَنْ أَبِي هُرَيْرَةَ رَضِيَ اللَّهُ عَنْهُ قَالَ: قَالَ رَسُولُ اللَّهِ صَلَّى اللَّهُ عَلَيْهِ وَسَلَّمَ: إِيَّاكُمْ وَالظَّنَّ، فَإِنَّ الظَّنَّ أَكْذَبُ الْحَدِيثِ</p>
+                            <p class="txt-terjemah">Dari Abu Hurairah ra., ia berkata: Rasulullah ﷺ bersabda: "Jauhilah prasangka, karena sesungguhnya prasangka adalah perkataan yang paling dusta."</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- HALAMAN TENTANG PENULIS -->
+                <div id="page-penulis" class="page-section hidden">
+                    <h1 class="text-3xl md:text-4xl font-bold text-emerald-900 mb-8 pb-4 border-b-2 border-emerald-100">Tentang Penulis</h1>
+                    <div class="bg-white p-8 md:p-12 rounded-3xl shadow-md border border-gray-100 flex flex-col md:flex-row gap-10 items-center md:items-start relative overflow-hidden">
+                        <!-- BG Decoration -->
+                        <div class="absolute top-0 right-0 w-64 h-64 bg-emerald-50 rounded-bl-full -z-10"></div>
+                        
+                        <!-- Avatar -->
+                        <div class="w-40 h-40 rounded-full bg-gradient-to-br from-emerald-600 to-teal-800 flex flex-col items-center justify-center text-white shrink-0 shadow-xl border-4 border-white relative">
+                            <span class="text-6xl font-bold font-serif">SM</span>
+                        </div>
+                        
+                        <!-- Info -->
+                        <div class="text-center md:text-left z-10">
+                            <h2 class="text-3xl font-extrabold text-gray-800 mb-2">Salman Mutawakkil</h2>
+                            <div class="inline-flex items-center gap-2 bg-emerald-100 text-emerald-800 px-4 py-1.5 rounded-full text-sm font-semibold mb-6 shadow-sm">
+                                <i class="fa-solid fa-graduation-cap"></i>
+                                <span>Mahasiswa UIN Banten Maulana Hasanuddin</span>
+                            </div>
+                            
+                            <p class="text-gray-600 leading-relaxed text-justify md:text-left mb-8 max-w-2xl">
+                                Salman Mutawakkil adalah mahasiswa dari UIN Banten Maulana Hasanuddin. Sebelumnya ia mengambil sekolah pendidikan dasar di MI Nurul Falah 02 Rangkas Bitung selama 6 tahun, dan dilanjutkan dengan menempuh Madrasah Tsanawiyah (MTs) dan Aliyah (MAN) di pondok pesantren Ma'had Tunas Ulama, Taktakan Serang. Ketertarikannya pada dunia psikologi adalah bahan bakar semangatnya dalam menulis e-book hadits yang berkaitan dengan psikologi digitalisasi.
+                            </p>
+                            
+                            <!-- Social / Contact Links -->
+                            <div class="flex gap-4 justify-center md:justify-start">
+                                <a href="#" class="w-12 h-12 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-emerald-600 hover:text-white hover:shadow-lg transition-all transform hover:-translate-y-1">
+                                    <i class="fa-brands fa-instagram text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-emerald-600 hover:text-white hover:shadow-lg transition-all transform hover:-translate-y-1">
+                                    <i class="fa-brands fa-linkedin-in text-xl"></i>
+                                </a>
+                                <a href="#" class="w-12 h-12 rounded-full bg-gray-100 text-gray-600 flex items-center justify-center hover:bg-emerald-600 hover:text-white hover:shadow-lg transition-all transform hover:-translate-y-1">
+                                    <i class="fa-solid fa-envelope text-xl"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+            </div>
+        </main>
+    </div>
+
+    <!-- JAVASCRIPT LOGIC FOR SPA & INTERACTIONS -->
+    <script>
+        // DOM Elements
+        const sidebar = document.getElementById('sidebar');
+        const overlay = document.getElementById('sidebar-overlay');
+        const btnToggle = document.getElementById('btn-toggle-sidebar');
+        const pages = document.querySelectorAll('.page-section');
+        const mainContent = document.getElementById('main-content');
+        
+        // --- Sidebar Logic ---
+        function toggleSidebar() {
+            sidebar.classList.toggle('-translate-x-full');
+            overlay.classList.toggle('hidden');
+        }
+
+        btnToggle.addEventListener('click', toggleSidebar);
+        overlay.addEventListener('click', toggleSidebar);
+
+        // --- Click Outside to Close Logic ---
+        document.addEventListener('click', function(event) {
+            // Logika opsional jika ingin menutup menu saat klik di luar area sidebar
+        });
+
+        // --- Dropdown Menu Logic ---
+        function toggleSubmenu(menuId) {
+            const el = document.getElementById(menuId);
+            const icon = document.getElementById('icon-' + menuId);
+            
+            if (el.classList.contains('hidden')) {
+                el.classList.remove('hidden');
+                el.classList.add('flex');
+                if(icon) {
+                    icon.classList.remove('fa-chevron-down', 'fa-angle-down');
+                    icon.classList.add(icon.id.includes('submenu') ? 'fa-chevron-up' : 'fa-angle-up');
+                }
+            } else {
+                el.classList.add('hidden');
+                el.classList.remove('flex');
+                if(icon) {
+                    icon.classList.remove('fa-chevron-up', 'fa-angle-up');
+                    icon.classList.add(icon.id.includes('submenu') ? 'fa-chevron-down' : 'fa-angle-down');
+                }
+            }
+        }
+
+        // --- Single Page Application (SPA) Logic ---
+        function bukaKonten(targetPageId, targetSectionId = null, pdfUrl = null) {
+            // 1. Hide all pages
+            pages.forEach(page => {
+                page.classList.add('hidden');
+                page.classList.remove('block');
+            });
+
+            // 2. Show target page
+            const targetPage = document.getElementById(targetPageId);
+            if (targetPage) {
+                targetPage.classList.remove('hidden');
+                targetPage.classList.add('block');
+            }
+
+            // 3. Handle PDF if provided
+            if (pdfUrl && targetPageId === 'page-review') {
+                document.getElementById('pdf-iframe').src = pdfUrl;
+            }
+
+            // 4. Scroll to section if provided, otherwise scroll to top
+            if (targetSectionId) {
+                setTimeout(() => {
+                    const section = document.getElementById(targetSectionId);
+                    if (section) {
+                        section.scrollIntoView({ behavior: 'smooth', block: 'start' });
+                        // Add highlight effect
+                        section.classList.add('ring-4', 'ring-emerald-200');
+                        setTimeout(() => section.classList.remove('ring-4', 'ring-emerald-200'), 1500);
+                    }
+                }, 100);
+            } else {
+                mainContent.scrollTo({ top: 0, behavior: 'smooth' });
+            }
+
+            // 5. Close sidebar on mobile devices automatically
+            if (window.innerWidth < 768 && !sidebar.classList.contains('-translate-x-full')) {
+                toggleSidebar();
+            }
+        }
+    </script>
+</body>
+</html>
